@@ -1,0 +1,2 @@
+I scale the radius linearly
+It is easy to realize,and the comparison of different node degrees is clear.

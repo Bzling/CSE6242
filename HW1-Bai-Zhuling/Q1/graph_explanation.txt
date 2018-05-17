@@ -1,0 +1,5 @@
+Use the Fruchterman Reingold layout algorithm. 
+Change the color of nodes by their degree.
+A node having more edges with other nodes has a darker color.
+Edges show the follow for friend relationship.
+Show name as each node label.

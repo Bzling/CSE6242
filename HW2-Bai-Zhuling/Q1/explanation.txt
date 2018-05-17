@@ -1,0 +1,7 @@
+a.
+Left align text, right align numbers and align titles with data for to make the 
+table easier to read. 
+Remove repetition of year and contries to make the table concise.
+
+b.
+I dragged out measure  values to the rows shelf and used lines with uniform thicknesses. Lines with higher rates are thicker.

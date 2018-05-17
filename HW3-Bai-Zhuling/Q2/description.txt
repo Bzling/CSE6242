@@ -1,0 +1,9 @@
+line 18-19: use reflection to get two Dataframes.
+line 21-25: filter edges weight less than 5 and get total incoming and outgoing weight of each node.
+line 29: join two Dataframes together 
+line 31-32: rename joined Dataframe
+line 34: select all nodes, outgoing and incoming weight
+line 37-38: rename dataframe 
+line 40: replace NULL with 0
+line 42: calculate (total incoming - total outgoing)
+line 43: output result

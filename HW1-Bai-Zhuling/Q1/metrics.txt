@@ -1,0 +1,11 @@
+Average Node Degree:1.047
+Meaning: Average number of edges a node connects to other nodes in this graph.
+
+Diameter of the graph:5
+Meaning: Once the shortes path length from every node to all other nodes is 
+calculated, the diameter is the longest of all the calculated path length.
+Diameter is representative of the linear size of a network.
+
+Average path length:2.955
+Meaning: On average, the number of steps it takes to get from one node of 
+the graph to another.

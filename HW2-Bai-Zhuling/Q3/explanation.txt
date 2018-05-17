@@ -1,0 +1,5 @@
+A.
+Plasma glucose and Insulin can separate the classes better. In the plasma and glucose plot, the cirlces and triangles are more separated while in the blood pressure and bmi plot circles and triangles are overlapping.
+
+C.
+Square root scale and log scale let data with a large range be displayed in a relatively small scatterplot. Meanwhile, small values won't be compressed down to the bottom of the scatterplot.

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script type="text/javascript" src="../lib/d3.v3.min.js"></script>
+<style>
+
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;}
+  .axis path,
+  .axis line{
+      fill: none;
+      stroke: black;}
+body {
+  font: 16px sans-serif;
+  text-align: center;
+}
+.label {
+  font-weight: bold;
+}
+.tile {
+  shape-rendering: crispEdges;
+}
+.axis path,
+    .axis line{
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+    }
+    .axis text{
+      font-family: sans-serif;
+      font-size: 8px;
+    }
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+.pagebreak { page-break-before: always; }
+</style>
+<body>
+<p>Plasma Glucose vs. Insulin</p>
+<div id="area1"></div>
+<div class="pagebreak"> </div>
+<p>BMI vs. BloodPressure</p>
+<div id="area2"></div>
+<div class="pagebreak"> </div>
+<p>Plasma Glucose vs. Insulin, scaled symbols</p>
+<div id="area3"></div>
+<div class="pagebreak"> </div>
+<p>Plasma Glucose vs. Insulin(square-root-scaled)</p>
+<div id="area4"></div>
+<div class="pagebreak"> </div>
+<p>Plasma Glucose vs. Insulin(log-scaled)</p>
+<div id="area5"></div>
+
+<script>
+var width = 1000,
+    height =800;
+var padding = 50;
+
+var nameTable=[["Negetive","blue"],["Positive","red"]];
+
+var dataset=[];
+
+d3.csv("diabetes.csv", function(error, dataset) {
+  if (error) throw error;
+  dataset.forEach(function(d) {
+  d.PlasmaGlucose = +d.plasma_glucose;
+  d.Insulin = +d.insulin;
+  d.BMI = +d.bmi;
+  d.BloodPressure = +d.blood_pressure;
+  d.class = +d.class;
+  });
+
+var svg = d3.select("#area1")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var xScale = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.PlasmaGlucose;})).nice()
+               .range([padding, width-padding]);
+
+var yScale = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.Insulin;})).nice()
+               .range([height-padding, padding]);
+
+var xAxis = d3.svg.axis()
+              .scale(xScale)
+              .orient("bottom");
+                      
+var yAxis = d3.svg.axis()
+              .scale(yScale)
+              .orient("left");
+
+svg.selectAll("circle")
+       .data(dataset)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d){
+        return xScale(d.PlasmaGlucose);
+       })
+       .attr("cy", function(d){
+        return yScale(d.Insulin);
+       })
+       .attr("r", function(d){
+        if(d.class==0){return 5;};
+        if(d.class!=0){return 0;};
+        })
+	     .style("fill", "none")
+	     .style("stroke", "blue");
+
+svg.selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("path")
+      .attr("class", "dot")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) 
+        {if(d.class==1)
+	         { return "translate(" + xScale(d.PlasmaGlucose) + "," + yScale(d.Insulin) + ")"; 
+         }})
+      .style("fill", "none")
+      .style("stroke", "red");  
+
+legend=svg.append("g")
+    .attr("class","legend")
+    .attr("transform","translate("+(width-50)+","+100+")");
+
+legend.append("circle")
+    .attr("cx",-30)
+    .attr("cy",0)
+    .attr("r",5)
+    .attr("fill","none")
+    .attr("stroke","blue");
+
+legend.append("path")
+    .attr("transform",function(d){return "translate("+(-30)+","+25+")";}) 
+    .attr("d", d3.svg.symbol().type("triangle-up")) 
+    .style("fill", "none")
+    .style("stroke", "red")   
+
+svg.append("g")
+    .attr("class", "axis")  
+    .attr("transform", "translate(0," + (height-padding)  + ")")
+    .call(xAxis)
+	  .style("stroke-width","1px")
+	  .append("text")
+	  .text("Plasma Glucose")
+	  .attr("x", 880)
+    .attr("y", -15)
+    .style("font-size", "14px");
+
+svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + padding + ",0)")
+    .call(yAxis)
+	  .append("text")
+	  .text("Insulin")
+	  .attr("x", 0)
+    .attr("y", 30)
+    .style("font-size", "14px");
+
+
+nameTable.forEach(function(d,i){
+  legend.append("text")
+  .attr("x",-20)
+  .attr("y",7+i*20)
+  .text(d[0]);
+ })  
+
+
+
+//plot 2
+var svg2 = d3.select("#area2")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var xScale2 = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.BMI;})).nice()
+               .range([padding, width-padding]);
+
+var yScale2 = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.BloodPressure;})).nice()
+               .range([height-padding, padding]);
+
+var xAxis2 = d3.svg.axis()
+              .scale(xScale2)
+              .orient("bottom");  
+                   
+var yAxis2 = d3.svg.axis()
+              .scale(yScale2)
+              .orient("left");
+
+svg2.selectAll("circle")
+       .data(dataset)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d){
+        return xScale2(d.BMI);
+       })
+       .attr("cy", function(d){
+        return yScale2(d.BloodPressure);
+       })
+       .attr("r", function(d){
+        if(d.class==0){return 5;};
+        if(d.class!=0){return 0;};
+        })
+       .style("fill", "none")
+       .style("stroke", "blue");
+
+svg2.selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("path")
+      .attr("class", "dot")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) 
+        {if(d.class==1)
+	         { return "translate(" + xScale2(d.BMI) + "," + yScale2(d.BloodPressure) + ")"; 
+         }})
+      .style("fill", "none")
+      .style("stroke", "red");  
+
+legend2=svg2.append("g")
+    .attr("class","legend")
+    .attr("transform","translate("+(width-50)+","+100+")");
+
+legend2.append("circle")
+    .attr("cx",-20)
+    .attr("cy",0)
+    .attr("r",5)
+    .attr("fill","none")
+    .attr("stroke","blue");
+
+legend2.append("path")
+    .attr("transform",function(d){return "translate("+(-20)+","+25+")";}) 
+    .attr("d", d3.svg.symbol().type("triangle-up")) 
+    .style("fill", "none")
+    .style("stroke", "red")   
+
+svg2.append("g")
+    .attr("class", "axis")  
+    .attr("transform", "translate(0," + (height-padding)  + ")")
+    .call(xAxis)
+	  .style("stroke-width","1px")
+	  .append("text")
+	  .text("BMI")
+	  .attr("x", 880)
+    .attr("y", -15)
+    .style("font-size", "14px");
+
+svg2.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + padding + ",0)")
+    .call(yAxis)
+	  .append("text")
+	  .text("Blood Pressure")
+	  .attr("x", 0)
+    .attr("y", 30)
+    .style("font-size", "14px");
+
+
+nameTable.forEach(function(d,i){
+  legend2.append("text")
+  .attr("x",-15)
+  .attr("y",7+i*20)
+  .text(d[0]);
+ })  
+
+
+ 
+//plot 3
+var svg3 = d3.select("#area3")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var xScale3 = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.PlasmaGlucose;})).nice()
+               .range([padding, width-padding]);
+
+var yScale3 = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.Insulin;})).nice()
+               .range([height-padding, padding]);
+
+var rScale = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.PlasmaGlucose * d.Insulin;}))
+               .range([3,10]);
+
+var triScale = d3.scale.linear()
+                 .domain(d3.extent(dataset, function(d){return d.PlasmaGlucose * d.Insulin;}))
+                 .range([10,200]);
+
+var arc = d3.svg.symbol().type('triangle-up')
+	    .size(function(d){ return triScale(d.PlasmaGlucose * d.Insulin); });
+
+var xAxis3 = d3.svg.axis()
+              .scale(xScale3)
+              .orient("bottom");
+                      
+var yAxis3 = d3.svg.axis()
+              .scale(yScale3)
+              .orient("left");
+
+svg3.selectAll("circle")
+       .data(dataset)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d){
+        return xScale3(d.PlasmaGlucose);
+       })
+       .attr("cy", function(d){
+        return yScale3(d.Insulin);
+       })
+       .attr("r", function(d){
+        if(d.class==0){return rScale(d.PlasmaGlucose * d.Insulin);};
+        if(d.class!=0){return 0;};
+        })
+	     .style("fill", "none")
+	     .style("stroke", "blue");
+
+svg3.selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("path")     
+      .attr("class", "dot")
+      .attr("d", arc)
+      .attr("transform", function(d) 
+        {if(d.class==1)
+	         { return "translate(" + xScale3(d.PlasmaGlucose) + "," + yScale3(d.Insulin) + ")"; 
+         }})
+      .style("fill", "none")
+      .style("stroke", "red");  
+
+legend3=svg3.append("g")
+    .attr("class","legend")
+    .attr("transform","translate("+(width-50)+","+100+")");
+
+legend3.append("circle")
+    .attr("cx",-30)
+    .attr("cy",0)
+    .attr("r",5)
+    .attr("fill","none")
+    .attr("stroke","blue");
+
+legend3.append("path")
+    .attr("transform",function(d){return "translate("+(-30)+","+25+")";}) 
+    .attr("d", d3.svg.symbol().type("triangle-up")) 
+    .style("fill", "none")
+    .style("stroke", "red")   
+
+svg3.append("g")
+    .attr("class", "axis")  
+    .attr("transform", "translate(0," + (height-padding)  + ")")
+    .call(xAxis)
+	  .style("stroke-width","1px")
+	  .append("text")
+	  .text("Plasma Glucose")
+	  .attr("x", 880)
+    .attr("y", -15)
+    .style("font-size", "14px");
+
+svg3.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + padding + ",0)")
+    .call(yAxis)
+	  .append("text")
+	  .text("Insulin")
+	  .attr("x", 0)
+    .attr("y", 30)
+    .style("font-size", "14px");
+
+
+nameTable.forEach(function(d,i){
+  legend3.append("text")
+  .attr("x",-20)
+  .attr("y",7+i*20)
+  .text(d[0]);
+ })   
+
+
+//plot 4
+var svg4 = d3.select("#area4")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var xScale4 = d3.scale.linear()
+               .domain(d3.extent(dataset, function(d){return d.PlasmaGlucose;})).nice()
+               .range([padding, width-padding]);
+
+var yScale4 = d3.scale.sqrt()
+               .domain(d3.extent(dataset, function(d){return d.Insulin;})).nice()
+               .range([height-padding, padding]);
+
+var xAxis4 = d3.svg.axis()
+              .scale(xScale4)
+              .orient("bottom");
+                      
+var yAxis4 = d3.svg.axis()
+              .scale(yScale4)
+              .orient("left");
+
+svg4.selectAll("circle")
+       .data(dataset)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d){
+        return xScale4(d.PlasmaGlucose);
+       })
+       .attr("cy", function(d){
+        return yScale4(d.Insulin);
+       })
+       .attr("r", function(d){
+        if(d.class==0){return 5;};
+        if(d.class!=0){return 0;};
+        })
+	     .style("fill", "none")
+	     .style("stroke", "blue");
+
+svg4.selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("path")
+      .attr("class", "dot")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) 
+        {if(d.class==1)
+	         { return "translate(" + xScale4(d.PlasmaGlucose) + "," + yScale4(d.Insulin) + ")"; 
+         }})
+      .style("fill", "none")
+      .style("stroke", "red");  
+
+legend4=svg4.append("g")
+    .attr("class","legend")
+    .attr("transform","translate("+(width-50)+","+100+")");
+
+legend4.append("circle")
+    .attr("cx",-30)
+    .attr("cy",0)
+    .attr("r",5)
+    .attr("fill","none")
+    .attr("stroke","blue");
+
+legend4.append("path")
+    .attr("transform",function(d){return "translate("+(-30)+","+25+")";}) 
+    .attr("d", d3.svg.symbol().type("triangle-up")) 
+    .style("fill", "none")
+    .style("stroke", "red")   
+
+svg4.append("g")
+    .attr("class", "axis")  
+    .attr("transform", "translate(0," + (height-padding)  + ")")
+    .call(xAxis4)
+	  .style("stroke-width","1px")
+	  .append("text")
+	  .text("Plasma Glucose")
+	  .attr("x", 880)
+    .attr("y", -15)
+    .style("font-size", "14px");
+
+svg4.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + padding + ",0)")
+    .call(yAxis4)
+	  .append("text")
+	  .text("Insulin Square Root")
+	  .attr("x", 0)
+    .attr("y", 30)
+    .style("font-size", "14px");
+
+
+nameTable.forEach(function(d,i){
+  legend4.append("text")
+  .attr("x",-20)
+  .attr("y",7+i*20)
+  .text(d[0]);
+ })  
+
+
+
+//plot 5
+var svg5 = d3.select("#area5")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var xScale5 = d3.scale.linear()
+               .domain([0.01, d3.max(dataset, function(d){return d.PlasmaGlucose;})]).nice()
+               .range([padding, width-padding]);
+
+var yScale5 = d3.scale.log()
+               .domain([0.01, d3.max(dataset, function(d){return d.Insulin;})]).nice()
+               .range([height-padding, padding]);
+
+var xAxis5 = d3.svg.axis()
+              .scale(xScale5)
+              .orient("bottom");
+                      
+var yAxis5 = d3.svg.axis()
+              .scale(yScale5)
+              .orient("left");
+
+svg5.selectAll("circle")
+       .data(dataset)
+       .enter()
+       .append("circle")
+       .attr("cx", function(d){
+        return xScale5(d.PlasmaGlucose);
+       })
+       .attr("cy", function(d){
+        return yScale5(d.Insulin);
+       })
+       .attr("r", function(d){
+        if(d.class==0){return 5;};
+        if(d.class!=0){return 0;};
+        })
+	     .style("fill", "none")
+	     .style("stroke", "blue");
+
+svg5.selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("path")
+      .attr("class", "dot")
+      .attr("d", d3.svg.symbol().type("triangle-up"))
+      .attr("transform", function(d) 
+        {if(d.class==1)
+	         { return "translate(" + xScale5(d.PlasmaGlucose) + "," + yScale5(d.Insulin) + ")"; 
+         }})
+      .style("fill", "none")
+      .style("stroke", "red");  
+
+legend5=svg5.append("g")
+    .attr("class","legend")
+    .attr("transform","translate("+(width-50)+","+100+")");
+
+legend5.append("circle")
+    .attr("cx",(-30))
+    .attr("cy",0)
+    .attr("r",5)
+    .attr("fill","none")
+    .attr("stroke","blue");
+
+legend5.append("path")
+    .attr("transform",function(d){return "translate("+(-30)+","+25+")";}) 
+    .attr("d", d3.svg.symbol().type("triangle-up")) 
+    .style("fill", "none")
+    .style("stroke", "red")   
+
+svg5.append("g")
+    .attr("class", "axis")  
+    .attr("transform", "translate(0," + (height-padding)  + ")")
+    .call(xAxis5)
+	  .style("stroke-width","1px")
+	  .append("text")
+	  .text("Plasma Glucose")
+	  .attr("x", 880)
+    .attr("y", -15)
+    .style("font-size", "14px");
+
+svg5.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(" + (padding) + ",0)")
+    .call(yAxis5)
+	  .append("text")
+	  .text("Insulin Log")
+	  .attr("x", 0)
+    .attr("y", 30)
+    .style("font-size", "14px");
+
+
+nameTable.forEach(function(d,i){
+  legend5.append("text")
+  .attr("x",-20)
+  .attr("y",7+i*20)
+  .text(d[0]);
+ })                    
+});
+</script>
+</body>
+</html>

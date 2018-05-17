@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Median Earnings by State</title>
+<script src="../lib/d3.v3.min.js"></script>
+<script src="../lib/d3-queue.v3.min.js"></script>
+<script src="../lib/topojson.v1.min.js"></script>
+<script src="../lib/d3.tip.v0.6.3.js"></script>
+<style = type = "text/css">
+.states {fill: none;
+        stroke: #fff;
+        stroke-linejoin: round;}
+            
+.d3-tip{position: absolute;           
+        text-align: center;           
+        width: 150px;                  
+        height: 75px;                 
+        padding: 2px;             
+        font-size: 10px;     
+        background: #FFFFE0;
+        border: 1px;      
+        border-radius: 8px;           
+        pointer-events: none; }
+
+</style>
+</head>
+<body>
+<div id="title"></div>
+<div id="picture"></div>
+<script type="text/javascript">
+
+var width = 960, height = 500;
+var color_domain = [10000,15000,18000,21000,24000,27000,30000,33000];
+var color = d3.scale.threshold().domain(color_domain)
+              .range(["#C7E9C0","#CEDB9C","#A1D99B","#B5CF6B","#74C476","#8CA252","#31A354","#637939"]);
+      var title=d3.select("#title")
+                .append("svg")
+                .append("text") 
+                .text("Median Earnings by State")
+                .attr("font-size","20px")
+                .attr("transform", "translate(50," + 100  + ")");              
+      var svg = d3.select("#picture").append("svg")
+                  .attr("width", width)
+                  .attr("height", height);
+
+      var agedata = [{"id":[], "name":[], "median_age":[]}];
+      var dataset = [];
+      d3.csv("median_ages.csv",function(error,dataset){
+        dataset.forEach(function(d){
+          agedata.push({"id": +d.id, "name": d.name, "median_age":+d.median_age});
+});
+});
+
+      console.log(agedata);
+
+      d3.queue().defer(d3.json, "us.json")
+        .defer(d3.json, "median_earnings.json")
+        .await(ready);
+      
+      
+      var path = d3.geo.path();
+      
+      var tip = d3.tip()
+        .attr('class','d3-tip')
+        .offset([-10,10])
+        .html(function(d){                         
+          return d.id;  
+              })   
+                   
+      
+      function ready(error, us, median_earn) {
+        if (error) throw error;
+        var dset = {};
+        median_earn.forEach(function(d) { dset[d.id] = +d.median_earnings;  });
+
+        svg.append("g").attr("class", "counties")
+            .selectAll("path")
+            .data(topojson.feature(us, us.objects.states).features)
+            .enter().append("path")
+            .attr("d", path)
+            .style("fill", function(d) { return color(dset[d.id]); })
+            .call(tip)
+            .on('mouseover',tip.show)
+            .on('mouseout',tip.hide);
+
+        svg.append("path")
+            .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a.id !== b.id; }))
+            .attr("class", "states")
+            .attr("d", path);
+      }
+
+      
+
+      var legend = svg.selectAll("g.legend")
+                      .data(color_domain)
+                      .enter().append("g")
+                      .attr("class","legend")
+
+      legend.append("rect")
+            .attr("x",800)
+            .attr("y",function(d,i){return height - i*20 - 40;})
+            .attr("width",40)
+            .attr("height",20)
+            .style("fill",function(d,i){return color(d);});
+
+      legend.append("text")
+            .attr("x",840)
+            .attr("y",function(d,i){return height - i*20 - 26;})
+            .text(function(d,i){return '$'+color_domain[i];})
+
+        
+
+
+      </script>
+</body>
+</html>

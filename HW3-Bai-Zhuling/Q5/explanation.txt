@@ -1,0 +1,1 @@
+Different features have different influence on price. Some features impact the cost a lot so they have a strong correlation with price while other features are not. Choose more features having a strong correlation with price will lead to higher coefficient of determination and less errors.

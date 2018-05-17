@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script type="text/javascript" src="../lib/d3.v3.min.js"></script>
+
+<style>
+
+path.link {
+  fill: none;
+  stroke: white;
+  stroke-width: 1.5px;
+}
+
+body {
+  font: 10px sans-serif;
+  text-align: center;
+}
+
+.label {
+  font-weight: bold;
+}
+.tile {
+  shape-rendering: crispEdges;
+}
+.axis path,
+    .axis line{
+      fill: none;
+      stroke: white;
+      shape-rendering: crispEdges;
+    }
+    .axis text{
+      font-family: sans-serif;
+      font-size: 14px;
+    }
+.lengend {
+      font: 10px sans-serif;
+    }
+text {
+  fill: #000;
+  font: 14px sans-serif;
+  pointer-events: none;
+}
+
+</style>
+<body>
+ <h1>A Visualization of Ice and Fire</h1>
+ <div id="select"></div> 
+<div id="area"></div>
+<script>
+
+var width = 1000, height = 600, padding = 50;
+var xStep = 1, yStep = 1;
+
+var svg = d3.select("#area")
+            .append("svg")
+            .attr("width", width+padding*2)
+            .attr("height", height+padding*2);
+
+var dataseason = ["1", "2", "3", "4", "5", "6"];
+
+
+var select = d3.select('#select')
+    .append('select')
+    .attr('class','select')
+    .on('change',change);
+
+var options = select
+    .selectAll('option')
+    .data(dataseason).enter()
+    .append('option')
+    .attr("transform", "translate(50," + (height-padding)  + ")")
+    .text(function (d) { return d; });
+
+var data=[];
+
+d3.csv("heatmap.csv", function(error, data) {
+  if (error) throw error;
+  data.forEach(function(d) {
+  d.Baratheon = +d.Baratheon;
+  d.Greyjoy=+d.Greyjoy;
+  d.Lannister=+d.Lannister;
+  d.Martell=+d.Martell;
+  d.Stark=+d.Stark;
+  d.Targaryen=+d.Targaryen;
+  d.Tyrell=+d.Tyrell;
+  d.Season = d['season'];
+  d.Episode=+d.episode;  
+  });
+
+
+dataset = data.filter(function(d){
+      if(d.Season == "1"){return d;}
+    });
+
+var Season1 = [];
+
+dataset.forEach(function(d){
+       Season1.push({"House": "Baratheon", "Episode": d.Episode, "Value": d.Baratheon})
+       Season1.push({"House": "Greyjoy", "Episode": d.Episode, "Value": d.Greyjoy}) 
+       Season1.push({"House": "Lannister", "Episode": d.Episode, "Value": d.Lannister})
+       Season1.push({"House": "Martell", "Episode": d.Episode, "Value": d.Martell}) 
+       Season1.push({"House": "Stark", "Episode": d.Episode, "Value": d.Stark})
+       Season1.push({"House": "Targaryen", "Episode": d.Episode, "Value": d.Targaryen}) 
+       Season1.push({"House": "Tyrell", "Episode": d.Episode, "Value": d.Tyrell})
+});
+
+
+var y_elements = d3.set(Season1.map(function(d){ return d.House;})).values();
+
+var x = d3.scale.linear()
+          .range([4*padding, width-2*padding])
+          .domain(d3.extent(Season1, function(d) { return d.Episode;}));
+
+var y = d3.scale.ordinal()
+          .rangePoints([height-2*padding, 3*padding])
+          .domain(y_elements);
+
+//var colordomain = [d3.min(Season1, function(d){ return d.Value;}), d3.max(Season1, function(d){ return d.Value;})]
+
+var colordomain = [0, d3.max(Season1, function(d){ return d.Value;})];
+var color_range = ["#FFF7EC", "#FEE8C8", "#FDD49E", "#FDBB84", "#FC8D59", "#EF6548", "#D7301F", "#B30000", "#7F0000"];
+
+var color = d3.scale.quantize()
+             .domain(colordomain)
+             .range(["#FFF7EC", "#FEE8C8", "#FDD49E", "#FDBB84", "#FC8D59", "#EF6548", "#D7301F", "#B30000", "#7F0000"]);
+
+var dom = color.domain();
+var l = (dom[1] - dom[0])/color.range().length;
+var breaks = d3.range(0, color.range().length).map(function(i){return Math.floor(i * l);});
+
+var xAxis = d3.svg.axis()
+                      .scale(x)
+                      .orient("bottom")
+                      
+                     
+var yAxis = d3.svg.axis()
+                      .scale(y)
+                      .orient("left")
+                      
+svg.selectAll(".tile")
+      .data(Season1)
+      .enter().append("rect")
+      .attr("class", "tile")
+      .attr("x", function(d) { return x(d.Episode)-0.25*x(xStep); })
+      .attr("y", function(d) { return y(d.House); })
+      .attr("width", 0.9*(x(xStep) - x(0)))
+      .attr("height",  50)
+      .style("fill", function(d) { return color(d.Value); });
+
+svg.append("g")
+    .attr("class", "axis") 
+    .attr("class", "label")
+    .attr("transform", "translate(-25," + (height-padding*0.75)  + ")")
+    .style("fill", "none") 
+    .call(xAxis)
+	  .append("text")
+	  .text("Episode")
+	  .attr("x", 920)
+    .attr("y", 10);
+    
+
+svg.append("g")
+    .attr("class", "axis")
+    .attr("class", "label")
+    .attr("transform", "translate(" + 2.5*padding + ",32)")
+    .style("fill", "none") 
+    .call(yAxis)
+	  .append("text")
+	  .text("House")
+	  .attr("x", 0)
+    .attr("y", 100);
+
+var legend = svg.selectAll(".legend")
+    .data(breaks)
+    .enter()
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", function(d, i) { 
+      return "translate(" + (40 + i * 100) + "," + (610) + ")"; });
+
+legend.append("rect")
+    .attr("width", 100)
+    .attr("height", 10)
+    .style("fill", function(d,i){return color_range[i];});
+
+legend.append("text")
+    .attr("x", 20)
+    .attr("y", 20)
+    .attr("dy", ".35em")
+    .text(String);
+
+svg.append("text")
+    .attr("class", "label")
+    .attr("x", 50)
+    .attr("y", 600)
+    .text("No of Appearances");
+
+
+
+});
+
+
+
+function change() {
+svg.selectAll('*').remove();
+  selectValue = d3.select('select').property('value')
+  var dataset=[];
+d3.csv("heatmap.csv", function(error, data) {
+  if (error) throw error;
+
+  data.forEach(function(d) {
+  d.Baratheon = +d.Baratheon;
+  d.Greyjoy=+d.Greyjoy;
+  d.Lannister=+d.Lannister;
+  d.Martell=+d.Martell;
+  d.Stark=+d.Stark;
+  d.Targaryen=+d.Targaryen;
+  d.Tyrell=+d.Tyrell;
+  d.Season = d['season'];
+  d.Episode=+d.episode;  
+    
+  });
+  
+
+dataset = data.filter(function(d){
+      if(d.Season == selectValue){return d;}
+    });
+
+var SeasonN = [];
+dataset.forEach(function(d){
+       SeasonN.push({"House": "Baratheon", "Episode": d.Episode, "Value": d.Baratheon})
+       SeasonN.push({"House": "Greyjoy", "Episode": d.Episode, "Value": d.Greyjoy}) 
+       SeasonN.push({"House": "Lannister", "Episode": d.Episode, "Value": d.Lannister})
+       SeasonN.push({"House": "Martell", "Episode": d.Episode, "Value": d.Martell}) 
+       SeasonN.push({"House": "Stark", "Episode": d.Episode, "Value": d.Stark})
+       SeasonN.push({"House": "Targaryen", "Episode": d.Episode, "Value": d.Targaryen}) 
+       SeasonN.push({"House": "Tyrell", "Episode": d.Episode, "Value": d.Tyrell})
+});
+
+var y_elements = d3.set(SeasonN.map(function(d){ return d.House;})).values();
+
+var x = d3.scale.linear()
+          .range([4*padding, width-2*padding])
+          .domain(d3.extent(SeasonN, function(d) { return d.Episode;}));
+var y = d3.scale.ordinal()
+          .rangePoints([height-2*padding, 3*padding])
+          .domain(y_elements);
+
+var colordomain = [d3.min(SeasonN, function(d){ return d.Value;}), d3.max(SeasonN, function(d){ return d.Value;})];
+
+var color_range = ["#FFF7EC", "#FEE8C8", "#FDD49E", "#FDBB84", "#FC8D59", "#EF6548", "#D7301F", "#B30000", "#7F0000"];
+
+var color = d3.scale.quantize()
+             .domain(colordomain)
+             .range(["#FFF7EC", "#FEE8C8", "#FDD49E", "#FDBB84", "#FC8D59", "#EF6548", "#D7301F", "#B30000", "#7F0000"]);
+
+
+var dom = color.domain();
+var l = (dom[1] - dom[0])/color.range().length;
+var breaks = d3.range(0, color.range().length).map(function(i){return Math.floor(i * l);});           
+
+var xAxis = d3.svg.axis()
+                      .scale(x)
+                      .orient("bottom")
+                                           
+var yAxis = d3.svg.axis()
+                      .scale(y)
+                      .orient("left")
+                      
+svg.selectAll(".tile")
+      .data(SeasonN)
+      .enter().append("rect")
+      .attr("class", "tile")
+      .attr("x", function(d) { return x(d.Episode)-0.25*x(xStep); })
+      .attr("y", function(d) { return y(d.House); })
+      .attr("width", 0.9*(x(xStep) - x(0)))
+      .attr("height",  50)
+      .style("fill", function(d) { return color(d.Value); });
+
+svg.append("g")
+    .attr("class", "axis")
+    .attr("class", "label")
+    .style("fill", "none") 
+    .attr("transform", "translate(-25," + (height-padding*0.75)  + ")")
+    .call(xAxis)
+          .append("text")
+          .text("Episode")
+          .attr("x", 920)
+    .attr("y", 10);
+    
+
+svg.append("g")
+    .attr("class", "axis")
+    .attr("class", "label")
+    .attr("transform", "translate(" + 2.5*padding + ",32)")
+    .style("fill", "none") 
+    .call(yAxis)
+          .append("text")
+          .text("House")
+          .attr("x", 0)
+    .attr("y", 100);
+    
+
+var legend = svg.selectAll(".legend")
+    .data(breaks)
+    .enter()
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", function(d, i) { 
+      return "translate(" + (50+i * 100) + "," + (610) + ")"; });
+
+legend.append("rect")
+    .attr("width", 100)
+    .attr("height", 10)
+    .style("fill", function(d,i){return color_range[i];});
+
+legend.append("text")
+    .attr("x", 0)
+    .attr("y", 20)
+    .text(String);
+
+svg.append("text")
+    .attr("class", "label")
+    .attr("x", 50)
+    .attr("y", 600)
+    .attr("dx", ".35em")
+    .text("No of Appearances");
+
+
+
+});
+};
+</script>
+</body>
+</html>

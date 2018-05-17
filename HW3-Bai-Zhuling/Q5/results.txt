@@ -1,0 +1,32 @@
+1.Metrics
+
+Mean Absolute Error	1656.147651
+Root Mean Squared Error	2456.983209
+Relative Absolute Error	0.276606
+Relative Squared Error	0.089608
+Coefficient of Determination	0.910392
+
+2,Metrics
+
+Mean Absolute Error	1265.001752
+Root Mean Squared Error	1783.328763
+Relative Absolute Error	0.253181
+Relative Squared Error	0.067781
+Coefficient of Determination	0.932219
+
+3.Change features:
+change body-style to fuel-type
+change engine-size to engine-location
+change highway-mpg to city-mpg
+change horsepower to stroke
+change peak-rpm to num-of-doors
+delete wheel-base
+
+Metrics
+
+Mean Absolute Error	2178.829544
+Root Mean Squared Error	3109.835064
+Relative Absolute Error	0.363903
+Relative Squared Error	0.143555
+Coefficient of Determination	0.856445
+

@@ -1,0 +1,77 @@
+46
+81
+
+Frontier Airlines Inc.,15.1477272727273
+American Eagle Airlines Inc.,15.0926456542502
+American Airlines Inc.,14.1542056074766
+Skywest Airlines Inc.,12.3978335795175
+Spirit Air Lines,7.93472584856397
+
+Lehigh Valley International Airport,Atlantic Southeast Airlines
+Abilene Regional Airport,American Eagle Airlines Inc.
+Albuquerque International Sunport,American Airlines Inc.
+Albuquerque International Sunport,Alaska Airlines Inc.
+Albuquerque International Sunport,JetBlue Airways
+Albuquerque International Sunport,Delta Air Lines Inc.
+Albuquerque International Sunport,Atlantic Southeast Airlines
+Albuquerque International Sunport,American Eagle Airlines Inc.
+Albuquerque International Sunport,Skywest Airlines Inc.
+Albuquerque International Sunport,Southwest Airlines Co.
+Aberdeen Regional Airport,Skywest Airlines Inc.
+Southwest Georgia Regional Airport,Atlantic Southeast Airlines
+Waco Regional Airport,American Eagle Airlines Inc.
+Arcata Airport,Skywest Airlines Inc.
+Atlantic City International Airport,Spirit Air Lines
+Adak Airport,Alaska Airlines Inc.
+Alexandria International Airport,Atlantic Southeast Airlines
+Alexandria International Airport,American Eagle Airlines Inc.
+Augusta Regional AirportŒæ(Bush Field),Delta Air Lines Inc.
+Augusta Regional AirportŒæ(Bush Field),Atlantic Southeast Airlines
+Albany International Airport,Delta Air Lines Inc.
+Albany International Airport,United Air Lines Inc.
+Albany International Airport,US Airways Inc.
+Albany International Airport,Southwest Airlines Co.
+Waterloo Regional Airport,American Eagle Airlines Inc.
+Rick Husband Amarillo International Airport,Atlantic Southeast Airlines
+Rick Husband Amarillo International Airport,American Eagle Airlines Inc.
+Rick Husband Amarillo International Airport,Skywest Airlines Inc.
+Rick Husband Amarillo International Airport,Southwest Airlines Co.
+Ted Stevens Anchorage International Airport,Alaska Airlines Inc.
+
+Abilene Regional Airport,100.0
+Albuquerque International Sunport,29.1666666666667
+Waco Regional Airport,100.0
+Arcata Airport,33.3333333333333
+Atlantic City International Airport,37.5
+Alexandria International Airport,25.0
+Albany International Airport,14.2857142857143
+Waterloo Regional Airport,50.0
+Rick Husband Amarillo International Airport,20.0
+Ted Stevens Anchorage International Airport,11.1111111111111
+Alpena County Regional Airport,100.0
+Aspen-Pitkin County Airport,52.1739130434783
+Hartsfield-Jackson Atlanta International Airport,20.5128205128205
+Austin-Bergstrom International Airport,23.0
+Asheville Regional Airport,25.0
+Bradley International Airport,28.0
+Meadows Field,62.5
+Birmingham-Shuttlesworth International Airport,25.0
+Billings Logan International Airport,66.6666666666667
+Bismarck Municipal Airport,50.0
+
+Guam International Airport,Wiley Post-Will Rogers Memorial Airport,3341.071204
+Pago Pago International Airport (Tafuna Airport),Wiley Post-Will Rogers Memorial Airport,3243.8070966249
+Deadhorse AirportŒæ(Prudhoe Bay Airport),Guam International Airport,3216.1726819161
+Deadhorse AirportŒæ(Prudhoe Bay Airport),Pago Pago International Airport (Tafuna Airport),3120.7574467876
+Henry E. Rohlsen Airport,Wiley Post-Will Rogers Memorial Airport,2871.1979022736
+Guam International Airport,Ralph Wien Memorial Airport,2851.6913655129
+Mercedita Airport,Wiley Post-Will Rogers Memorial Airport,2838.4547121225
+Cyril E. King Airport,Wiley Post-Will Rogers Memorial Airport,2803.5055294596
+Luis Muí±oz Marí_n International Airport,Wiley Post-Will Rogers Memorial Airport,2792.7028867609
+Rafael Herníçndez Airport,Wiley Post-Will Rogers Memorial Airport,2786.8463925481
+
+51681
+
+13
+
+26280

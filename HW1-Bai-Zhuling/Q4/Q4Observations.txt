@@ -1,0 +1,14 @@
+c(i)9956    903     87      4       3       4       18      14 
+1	5	17	1	521	2881	2778	1	400	
+522	51	3	4	10	12	445	1	9	
+9216	8715	5783	1	54	1	1	1	46
+12	909     8413	168	3	361	380	13	1	
+3	2	4	156	4	121	3	1	8384	
+8448	1	8390	9867	1	8	8339
+c(ii)toString(toDate(substring(value,0,11)),"EEE,MMM,dd,yyyy")
+c(iii)regionidzip; buildingqualitytypeid
+c(iv)value.toNumber()>3
+c(v)value.replace("*", " ")
+c(vi)OpenRefine has reconciliation feature. It can link text names or values 
+in the columns of the data to database identifiers in various database ID space.
+It helps the user to develop Metadata to the user's data.
